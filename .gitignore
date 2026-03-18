@@ -1,0 +1,10 @@
+# Lixo de compilação do .NET
+[Bb]in/
+[Oo]bj/
+
+# Configurações do VS Code
+.vscode/
+
+# Arquivos de usuário
+*.user
+*.suo
