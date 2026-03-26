@@ -1,33 +1,44 @@
-Projeto de Tópicos Avançados em Computação
+## 📁 Estrutura do Projeto
 
 
-Plataforma de Marketplace de Serviços
 
-src/
+
+
+```text
+plataforma-servicos/
 │
-├── Marketplace.API/
-│   ├── Controllers/
-│   │   ├── UsuarioController.cs
-│   │   ├── ServicoController.cs
-│   │   ├── PedidoController.cs
-│   │   └── AvaliacaoController.cs
+├── services/
+│   ├── PrestadoresService/
+│   ├── ClientesService/
+│   ├── PropostasService/
+│   │   ├── Controllers/
+│   │   ├── Models/
+│   │   ├── Data/
+│   │   ├── Services/
+│   │   ├── Events/
+│   │   │   └── PropostaAceitaEvent.cs
+│   │   ├── Program.cs
+│   │   ├── appsettings.json
+│   │   └── PropostasService.csproj
 │   │
-│   ├── Modelos/
-│   │   ├── Usuario.cs
-│   │   ├── Servico.cs
-│   │   ├── Pedido.cs
-│   │   └── Avaliacao.cs
-│   │
-│   ├── Servicos/
-│   │   ├── UsuarioServico.cs
-│   │   ├── ServicoServico.cs
-│   │   └── PedidoServico.cs
-│   │
-│   ├── Dados/
-│   │   └── AppDbContext.cs
-│   │
-│   ├── Program.cs
-│   └── appsettings.json
+│   ├── ContratosService/
+│   ├── AvaliacoesService/
+│   └── RankingsService/
+│       ├── Queries/
+│       ├── Models/
+│       ├── Services/
+│       ├── Program.cs
+│       ├── appsettings.json
+│       └── RankingsService.csproj
 │
-└── Marketplace.Testes/
-    └── ApiTestes.cs
+├── shared/
+│   ├── Events/
+│   └── DTOs/
+│
+├── gateway/
+│   └── ApiGateway/
+│
+├── realtime/
+│   └── RealtimeService/
+│
+└── docker-compose.yml
