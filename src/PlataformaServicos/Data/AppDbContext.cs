@@ -12,7 +12,5 @@ namespace PlataformaServicos.Data
         public DbSet<Prestador> Prestadores { get; set; }
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<Proposta> Propostas { get; set; }
-        public DbSet<Contrato> Contratos { get; set; }
-        public DbSet<Avaliacao> Avaliacoes { get; set; }
     }
 }

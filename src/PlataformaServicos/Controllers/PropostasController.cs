@@ -18,8 +18,7 @@ namespace PlataformaServicos.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Proposta>>> Listar()
         {
-            var propostas = await _service.ListarAsync();
-            return Ok(propostas);
+            return Ok(await _service.ListarAsync());
         }
 
         [HttpGet("{id}")]
