@@ -1,44 +1,32 @@
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
-using System.Text;
+using NotificationService.Hubs;
 
-var factory = new ConnectionFactory()
+var builder = WebApplication.CreateBuilder(args);
+
+// Serviços
+builder.Services.AddControllers();
+
+// SignalR
+builder.Services.AddSignalR();
+
+builder.Services.AddScoped<NotificacaoService>();
+
+// CORS
+builder.Services.AddCors(options =>
 {
-    HostName = "localhost"
-};
+    options.AddPolicy("SignalRPolicy", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
-var connection = factory.CreateConnection();
+var app = builder.Build();
 
-var channel = connection.CreateModel();
+app.UseCors("SignalRPolicy");
 
-channel.QueueDeclare(
-    queue: "pedido_criado",
-    durable: false,
-    exclusive: false,
-    autoDelete: false,
-    arguments: null
-);
+app.MapControllers();
 
-Console.WriteLine("Aguardando mensagens...");
+app.MapHub<PropostaHub>("/hubs/propostas");
 
-var consumer = new EventingBasicConsumer(channel);
-
-consumer.Received += (model, ea) =>
-{
-    var body = ea.Body.ToArray();
-
-    var message = Encoding.UTF8.GetString(body);
-
-    Console.WriteLine("Pedido recebido:");
-    Console.WriteLine(message);
-
-    Console.WriteLine("Email enviado!");
-};
-
-channel.BasicConsume(
-    queue: "pedido_criado",
-    autoAck: true,
-    consumer: consumer
-);
-
-Console.ReadLine();
+app.Run();
