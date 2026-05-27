@@ -5,6 +5,7 @@ using PlataformaServicos.Services;
 using Serilog;
 using Serilog.Formatting.Json;
 using HealthChecks.UI.Client;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,23 +19,19 @@ Log.Logger = new LoggerConfiguration()
         "Microsoft",
         Serilog.Events.LogEventLevel.Information
     )
-
     .Enrich.FromLogContext()
     .Enrich.WithCorrelationId()
     .Enrich.WithEnvironmentName()
     .Enrich.WithMachineName()
-
     .WriteTo.Console(
         outputTemplate:
         "[{Timestamp:HH:mm:ss} {Level:u3}] {CorrelationId} {Message:lj}{NewLine}{Exception}"
     )
-
     .WriteTo.File(
         formatter: new JsonFormatter(),
         path: "logs/app-.json",
         rollingInterval: RollingInterval.Day
     )
-
     .CreateLogger();
 
 builder.Host.UseSerilog();
@@ -83,7 +80,6 @@ try
     builder.Services.AddScoped<ClienteService>();
     builder.Services.AddScoped<PropostaService>();
 
-
     // ======================
     // BUILD APP
     // ======================
@@ -96,13 +92,32 @@ try
 
     app.UseSerilogRequestLogging();
 
+    app.UseRouting();
+
     if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
-        app.UseSwaggerUI();
+
+        app.UseSwaggerUI(options =>
+        {
+            options.SwaggerEndpoint(
+                "/swagger/v1/swagger.json",
+                "PlataformaServicos API V1"
+            );
+
+            options.RoutePrefix = "swagger";
+        });
     }
 
     app.UseHttpsRedirection();
+
+    // ======================
+    // PROMETHEUS
+    // ======================
+
+    app.UseHttpMetrics();
+
+    app.MapMetrics();
 
     app.UseAuthorization();
 

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PlataformaServicos.Data;
 using PlataformaServicos.Models;
+using PlataformaServicos.Metrics;
 
 namespace PlataformaServicos.Services
 {
@@ -26,7 +27,12 @@ namespace PlataformaServicos.Services
         public async Task<Proposta> CriarAsync(Proposta proposta)
         {
             _context.Propostas.Add(proposta);
+
             await _context.SaveChangesAsync();
+
+            // MÉTRICA PROMETHEUS
+            MarketplaceMetrics.PropostasCriadas.Inc();
+
             return proposta;
         }
 
@@ -45,6 +51,7 @@ namespace PlataformaServicos.Services
             proposta.PrestadorId = propostaAtualizada.PrestadorId;
 
             await _context.SaveChangesAsync();
+
             return true;
         }
 
@@ -56,7 +63,9 @@ namespace PlataformaServicos.Services
                 return false;
 
             _context.Propostas.Remove(proposta);
+
             await _context.SaveChangesAsync();
+
             return true;
         }
     }
