@@ -1,9 +1,10 @@
 import { Component, signal } from '@angular/core';
-import { Footer } from './shared/components/footer/footer';
+import { FooterComponent } from './shared/components/footer/footer';
 
 @Component({
   selector: 'app-root',
-  imports: [Footer],
+  standalone: true,
+  imports: [FooterComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

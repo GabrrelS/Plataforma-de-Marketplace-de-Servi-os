@@ -1,6 +1,33 @@
-footer {
-  padding: 12px;
-  text-align: center;
-  border-top: 1px solid #ddd;
-  margin-top: 20px;
+.app-footer {
+  position: fixed;
+  bottom: 0;
+  right: 12px;
+  font-size: 11px;
+  color: #888;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 4px 8px;
+}
+
+.env-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.env-development {
+  background: #FFF3CD;
+  color: #856404;
+}
+
+.env-staging {
+  background: #D1ECF1;
+  color: #0C5460;
+}
+
+.env-production {
+  background: #D4EDDA;
+  color: #155724;
 }

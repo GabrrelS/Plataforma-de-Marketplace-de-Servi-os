@@ -9,14 +9,13 @@ export interface VersionInfo {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
-export class Version {
+export class VersionService {
+
   private http = inject(HttpClient);
 
   getVersion(): Observable<VersionInfo> {
-    return this.http.get<VersionInfo>(
-      'http://localhost:5006/api/v1/version'
-    );
+    return this.http.get<VersionInfo>('/api/v1/version');
   }
 }

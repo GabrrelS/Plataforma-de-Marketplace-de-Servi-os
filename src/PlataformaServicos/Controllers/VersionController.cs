@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace PlataformaServicos.Controllers;
+namespace PlataformaServicos.API.Controllers;
 
 [ApiController]
 [Route("api/v1/version")]
@@ -22,7 +22,7 @@ public class VersionController : ControllerBase
     {
         return Ok(new
         {
-            version = _configuration["AppVersion"] ?? "0.1.0-dev",
+            version = _configuration["AppVersion"] ?? "0.0.0",
             environment = _environment.EnvironmentName,
             buildDate = DateTime.UtcNow
         });
