@@ -11,14 +11,36 @@ on:
 
 jobs:
 
-  discover:
+  build:
 
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        service:
+          - NotificationService
+          - OrderService
+          - ProductService
 
     steps:
 
       - uses: actions/checkout@v4
 
-      - name: Listar microsserviços
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore
         run: |
-          find . -type f -name "*.csproj"
+          dotnet restore \
+          src/PlataformaServicos/MicroServices/${{ matrix.service }}/${{ matrix.service }}.csproj
+
+      - name: Build
+        run: |
+          dotnet build \
+          src/PlataformaServicos/MicroServices/${{ matrix.service }}/${{ matrix.service }}.csproj \
+          --configuration Release \
+          --no-restore
