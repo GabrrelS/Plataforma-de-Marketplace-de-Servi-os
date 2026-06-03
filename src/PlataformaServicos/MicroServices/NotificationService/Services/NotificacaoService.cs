@@ -1,3 +1,5 @@
+using NotificationService.Models;
+
 namespace NotificationService.Services;
 
 public class NotificacaoService
