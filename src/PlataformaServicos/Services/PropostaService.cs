@@ -14,9 +14,15 @@ namespace PlataformaServicos.Services
             _context = context;
         }
 
-        public async Task<List<Proposta>> ListarAsync()
+        // LISTAGEM COM PAGINAÇÃO
+        public async Task<List<Proposta>> ListarAsync(
+            int pagina = 1,
+            int tamanhoPagina = 10)
         {
-            return await _context.Propostas.ToListAsync();
+            return await _context.Propostas
+                .Skip((pagina - 1) * tamanhoPagina)
+                .Take(tamanhoPagina)
+                .ToListAsync();
         }
 
         public async Task<Proposta?> BuscarPorIdAsync(int id)
@@ -26,33 +32,64 @@ namespace PlataformaServicos.Services
 
         public async Task<Proposta> CriarAsync(Proposta proposta)
         {
-            _context.Propostas.Add(proposta);
+            // REGRA DE NEGÓCIO
+            if (proposta.Valor <= 0)
+            {
+                throw new ArgumentException(
+                    "O valor da proposta deve ser maior que zero.");
+            }
 
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Propostas.Add(proposta);
 
-            // MÉTRICA PROMETHEUS
-            MarketplaceMetrics.PropostasCriadas.Inc();
+                await _context.SaveChangesAsync();
 
-            return proposta;
+                // MÉTRICA PROMETHEUS
+                MarketplaceMetrics.PropostasCriadas.Inc();
+
+                return proposta;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(
+                    $"Erro ao criar proposta: {ex.Message}");
+            }
         }
 
-        public async Task<bool> AtualizarAsync(int id, Proposta propostaAtualizada)
+        public async Task<bool> AtualizarAsync(
+            int id,
+            Proposta propostaAtualizada)
         {
             var proposta = await _context.Propostas.FindAsync(id);
 
             if (proposta == null)
                 return false;
 
-            proposta.Titulo = propostaAtualizada.Titulo;
-            proposta.Descricao = propostaAtualizada.Descricao;
-            proposta.Valor = propostaAtualizada.Valor;
-            proposta.Status = propostaAtualizada.Status;
-            proposta.ClienteId = propostaAtualizada.ClienteId;
-            proposta.PrestadorId = propostaAtualizada.PrestadorId;
+            if (propostaAtualizada.Valor <= 0)
+            {
+                throw new ArgumentException(
+                    "O valor da proposta deve ser maior que zero.");
+            }
 
-            await _context.SaveChangesAsync();
+            try
+            {
+                proposta.Titulo = propostaAtualizada.Titulo;
+                proposta.Descricao = propostaAtualizada.Descricao;
+                proposta.Valor = propostaAtualizada.Valor;
+                proposta.Status = propostaAtualizada.Status;
 
-            return true;
+                // ClienteId e PrestadorId NÃO mudam após criação
+
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(
+                    $"Erro ao atualizar proposta: {ex.Message}");
+            }
         }
 
         public async Task<bool> DeletarAsync(int id)
@@ -62,11 +99,19 @@ namespace PlataformaServicos.Services
             if (proposta == null)
                 return false;
 
-            _context.Propostas.Remove(proposta);
+            try
+            {
+                _context.Propostas.Remove(proposta);
 
-            await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
-            return true;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(
+                    $"Erro ao excluir proposta: {ex.Message}");
+            }
         }
     }
 }
