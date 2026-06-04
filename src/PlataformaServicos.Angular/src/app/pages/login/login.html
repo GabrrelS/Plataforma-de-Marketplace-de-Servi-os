@@ -1,0 +1,29 @@
+<div class="auth-wrap page-enter">
+  <div class="auth-card">
+    <div class="auth-title serif">Bem-vindo de volta</div>
+    <div class="auth-sub">Entre na sua conta FreelanceHub</div>
+
+    @if (erro()) {
+      <div class="erro-msg">{{ erro() }}</div>
+    }
+
+    <div class="field">
+      <label>E-mail</label>
+      <input type="email" [(ngModel)]="email" placeholder="seu@email.com" />
+    </div>
+    <div class="field">
+      <label>Senha</label>
+      <input type="password" [(ngModel)]="senha" placeholder="••••••••" (keyup.enter)="entrar()" />
+    </div>
+
+    <button class="btn btn-primary auth-btn" [disabled]="loading()" (click)="entrar()">
+      {{ loading() ? 'Entrando...' : 'Entrar' }}
+    </button>
+
+    <div class="divider">ou</div>
+
+    <div class="auth-switch">
+      Não tem conta? <a routerLink="/cadastro">Cadastre-se grátis</a>
+    </div>
+  </div>
+</div>

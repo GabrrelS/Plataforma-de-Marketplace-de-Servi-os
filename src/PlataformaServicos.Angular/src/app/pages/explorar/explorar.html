@@ -1,0 +1,48 @@
+<div class="explorar-layout page-enter">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="filter-group">
+      <div class="filter-label">Especialidade</div>
+      <div
+        class="filter-item"
+        [class.selected]="especialidade() === ''"
+        (click)="setEsp('')">
+        Todas
+      </div>
+      @for (esp of especialidades; track esp) {
+        <div
+          class="filter-item"
+          [class.selected]="especialidade() === esp"
+          (click)="setEsp(esp)">
+          {{ esp }}
+        </div>
+      }
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="main-header">
+      <input
+        class="search-input"
+        type="text"
+        placeholder="Buscar prestadores..."
+        [value]="busca()"
+        (input)="setBusca($any($event.target).value)"
+      />
+      <span class="results-count">{{ filtrados().length }} resultado(s)</span>
+    </div>
+
+    @if (loading()) {
+      <div class="spinner"></div>
+    } @else if (filtrados().length === 0) {
+      <div class="empty">Nenhum prestador encontrado.</div>
+    } @else {
+      <div class="grid">
+        @for (p of filtrados(); track p.id) {
+          <app-service-card [prestador]="p" />
+        }
+      </div>
+    }
+  </main>
+</div>

@@ -1,0 +1,68 @@
+<div class="page-enter dash-wrap">
+  <div class="dash-header">
+    <h2>Dashboard</h2>
+    <p>Visão geral da plataforma</p>
+  </div>
+
+  <!-- STATS -->
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-icon purple">📋</div>
+      <div class="stat-val">{{ totalPropostas }}</div>
+      <div class="stat-label">Propostas totais</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon blue">👤</div>
+      <div class="stat-val">{{ totalPrestadores }}</div>
+      <div class="stat-label">Prestadores</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon green">🧑‍💼</div>
+      <div class="stat-val">{{ totalClientes }}</div>
+      <div class="stat-label">Clientes</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon orange">⏳</div>
+      <div class="stat-val">{{ propostasPendentes }}</div>
+      <div class="stat-label">Pendentes</div>
+    </div>
+  </div>
+
+  <!-- PROPOSTAS TABLE -->
+  <div class="table-card">
+    <div class="table-header">
+      <h3>Propostas recentes</h3>
+    </div>
+
+    @if (loading()) {
+      <div class="spinner"></div>
+    } @else if (propostas().length === 0) {
+      <div class="empty">Nenhuma proposta cadastrada ainda.</div>
+    } @else {
+      <table class="table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Prestador ID</th>
+            <th>Cliente ID</th>
+            <th>Valor</th>
+            <th>Status</th>
+            <th>Descrição</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of propostas(); track p.id) {
+            <tr>
+              <td>{{ p.id }}</td>
+              <td>{{ p.prestadorId }}</td>
+              <td>{{ p.clienteId }}</td>
+              <td>R$ {{ p.valor }}</td>
+              <td><span class="badge" [class]="statusClass(p.status)">{{ p.status || 'Pendente' }}</span></td>
+              <td class="desc-cell">{{ p.descricao }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

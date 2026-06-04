@@ -1,0 +1,91 @@
+.back-row { padding: 20px 2rem 0; }
+
+.detail-layout {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px 2rem 60px;
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 32px;
+  align-items: start;
+}
+
+.detail-gallery {
+  background: linear-gradient(135deg, #1a1030, #2d1b69);
+  border-radius: 16px;
+  height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.gallery-av { width: 80px; height: 80px; font-size: 28px; }
+
+.detail-title { font-size: 26px; font-weight: 600; margin-bottom: 6px; }
+.detail-esp   { color: var(--accent); font-size: 14px; margin-bottom: 24px; }
+
+.tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+.tab {
+  padding: 10px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--muted);
+  border: none;
+  background: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+.tab:hover  { color: var(--text); }
+.tab.active { color: var(--text); border-bottom-color: var(--accent); }
+
+.tab-content { }
+
+.desc-text { color: var(--muted); line-height: 1.8; font-size: 15px; }
+
+.valor-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding: 14px 16px;
+  background: var(--surface2);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+.valor-label { font-size: 13px; color: var(--muted); }
+.valor { font-size: 20px; font-weight: 600; }
+
+.success-msg {
+  padding: 16px;
+  background: rgba(46,204,113,0.1);
+  border: 1px solid rgba(46,204,113,0.3);
+  border-radius: 10px;
+  color: var(--success);
+  font-size: 15px;
+}
+
+/* Side card */
+.purchase-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px;
+  position: sticky;
+  top: 80px;
+}
+
+.p-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.p-av     { width: 48px; height: 48px; font-size: 17px; }
+.p-name   { font-size: 15px; font-weight: 500; }
+.p-esp    { font-size: 13px; color: var(--muted); }
+
+.p-rating { display: flex; align-items: center; gap: 4px; font-size: 14px; margin-bottom: 12px; }
+.star     { color: #F39C12; font-size: 16px; }
+.rev      { color: var(--muted); font-size: 12px; }
+
+.p-price      { font-size: 28px; font-weight: 600; }
+.p-price span { font-size: 13px; color: var(--muted); font-weight: 400; }
+
+.empty { text-align: center; padding: 60px; color: var(--muted); }
