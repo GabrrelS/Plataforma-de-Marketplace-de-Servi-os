@@ -1,0 +1,15 @@
+<div class="app-footer" *ngIf="info">
+
+  <span>
+    Versão {{ info.version }}
+  </span>
+
+  <span
+    class="env-badge"
+    [ngClass]="'env-' + info.environment.toLowerCase()">
+
+    {{ info.environment }}
+
+  </span>
+
+</div>
