@@ -1,0 +1,28 @@
+<a class="card service-card" [routerLink]="['/prestadores', prestador.id]">
+  <div class="card-img">
+    <div class="avatar card-avatar">{{ iniciais }}</div>
+  </div>
+
+  <div class="card-body">
+    <div class="card-seller">
+      <div class="avatar seller-av">{{ iniciais }}</div>
+      <span class="seller-name">{{ prestador.nome }}</span>
+      <span class="seller-level">{{ prestador.especialidade }}</span>
+    </div>
+
+    <div class="card-title">{{ prestador.descricao || 'Serviço profissional disponível' }}</div>
+
+    <div class="card-footer">
+      <div class="card-stars">
+        <span class="star">★</span>
+        {{ avaliacaoArredondada || '–' }}
+        <span class="reviews">({{ prestador.totalAvaliacoes || 0 }})</span>
+      </div>
+      @if (prestador.valorHora) {
+        <div class="card-price">
+          R$ {{ prestador.valorHora }}<span>/hora</span>
+        </div>
+      }
+    </div>
+  </div>
+</a>

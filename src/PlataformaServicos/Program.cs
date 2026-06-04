@@ -46,6 +46,18 @@ try
 
     builder.Services.AddControllers();
 
+    // --- CORREÇÃO 1: Adicionando o serviço de CORS para liberar o Angular ---
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowAngular", policy =>
+        {
+            policy.WithOrigins("http://localhost:4200") // Permite o seu Frontend no Docker/Local
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+    });
+    // ------------------------------------------------------------------------
+
     builder.Services.AddEndpointsApiExplorer();
 
     builder.Services.AddSwaggerGen();
@@ -92,22 +104,23 @@ try
 
     app.UseSerilogRequestLogging();
 
+    // --- CORREÇÃO 2: Ativando o CORS logo no início do pipeline ---
+    app.UseCors("AllowAngular");
+    // --------------------------------------------------------------
+
     app.UseRouting();
 
-    if (app.Environment.IsDevelopment())
+    app.UseSwagger();
+
+    app.UseSwaggerUI(options =>
     {
-        app.UseSwagger();
+        options.SwaggerEndpoint(
+            "/swagger/v1/swagger.json",
+            "PlataformaServicos API V1"
+        );
 
-        app.UseSwaggerUI(options =>
-        {
-            options.SwaggerEndpoint(
-                "/swagger/v1/swagger.json",
-                "PlataformaServicos API V1"
-            );
-
-            options.RoutePrefix = "swagger";
-        });
-    }
+        options.RoutePrefix = "swagger";
+    });
 
     app.UseHttpsRedirection();
 

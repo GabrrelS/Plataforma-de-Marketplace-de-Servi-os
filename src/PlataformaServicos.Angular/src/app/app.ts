@@ -1,19 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { NavbarComponent } from './shared/components/navbar/navbar.component';
-import { ToastComponent } from './shared/components/toast/toast.component';
+import { NavbarComponent } from './shared/components/navbar/navbar';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent, ToastComponent],
-  template: `
-    <app-navbar />
-    <router-outlet />
-    <app-toast />
-  `,
-  styles: [`
-    :host { display: block; min-height: 100vh; background: #f9fafb; }
-  `]
+  imports: [RouterOutlet, NavbarComponent],
+  templateUrl: './app.html',
 })
 export class AppComponent {}

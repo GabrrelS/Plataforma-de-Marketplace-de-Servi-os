@@ -1,26 +1,29 @@
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  {
+    path: '',
+    loadComponent: () => import('./pages/home/home').then((m) => m.HomeComponent),
+  },
+  {
+    path: 'explorar',
+    loadComponent: () => import('./pages/explorar/explorar').then((m) => m.ExplorarComponent),
+  },
+  {
+    path: 'prestadores/:id',
+    loadComponent: () => import('./pages/detalhe/detalhe').then((m) => m.DetalheComponent),
+  },
   {
     path: 'dashboard',
-    loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent)
+    loadComponent: () => import('./pages/dashboard/dashboard').then((m) => m.DashboardComponent),
   },
   {
-    path: 'clientes',
-    loadComponent: () => import('./features/clientes/clientes.component').then(m => m.ClientesComponent)
+    path: 'login',
+    loadComponent: () => import('./pages/login/login').then((m) => m.LoginComponent),
   },
   {
-    path: 'prestadores',
-    loadComponent: () => import('./features/prestadores/prestadores.component').then(m => m.PrestadoresComponent)
+    path: 'cadastro',
+    loadComponent: () => import('./pages/cadastro/cadastro').then((m) => m.CadastroComponent),
   },
-  {
-    path: 'propostas',
-    loadComponent: () => import('./features/propostas/propostas.component').then(m => m.PropostasComponent)
-  },
-  {
-    path: 'contratos',
-    loadComponent: () => import('./features/contratos/contratos.component').then(m => m.ContratosComponent)
-  },
-  { path: '**', redirectTo: 'dashboard' }
+  { path: '**', redirectTo: '' },
 ];

@@ -1,0 +1,45 @@
+<div class="page-enter">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-tag">✨ Marketplace de Serviços Digitais</div>
+    <h1 class="serif">Encontre o <em>talento certo</em><br>para seu projeto</h1>
+    <p>Conecte-se com prestadores verificados e transforme suas ideias em realidade.</p>
+
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="Ex: design, desenvolvimento, marketing..." />
+      <a routerLink="/explorar" class="btn btn-primary">Buscar</a>
+    </div>
+
+    <div class="categories">
+      @for (cat of categorias; track cat.label) {
+        <a routerLink="/explorar" class="cat-chip">
+          {{ cat.icon }} {{ cat.label }}
+        </a>
+      }
+    </div>
+  </section>
+
+  <!-- DESTAQUE -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Prestadores em destaque</h2>
+      <a routerLink="/explorar" class="btn btn-ghost">Ver todos →</a>
+    </div>
+
+    @if (loading()) {
+      <div class="spinner"></div>
+    } @else if (prestadores().length === 0) {
+      <div class="empty-state">
+        <p>Nenhum prestador cadastrado ainda.</p>
+        <p class="hint">Certifique-se que o backend está rodando em <code>http://localhost:5006</code></p>
+      </div>
+    } @else {
+      <div class="grid">
+        @for (p of prestadores(); track p.id) {
+          <app-service-card [prestador]="p" />
+        }
+      </div>
+    }
+  </section>
+</div>

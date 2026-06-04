@@ -1,0 +1,86 @@
+<div class="page-enter">
+  <div class="back-row">
+    <a routerLink="/explorar" class="btn btn-ghost">← Voltar para explorar</a>
+  </div>
+
+  @if (loading()) {
+    <div class="spinner"></div>
+  } @else if (!prestador()) {
+    <div class="empty">Prestador não encontrado.</div>
+  } @else {
+    <div class="detail-layout">
+      <!-- LEFT -->
+      <div class="detail-main">
+        <div class="detail-gallery">
+          <div class="avatar gallery-av">{{ iniciais }}</div>
+        </div>
+
+        <h1 class="detail-title">{{ prestador()!.nome }}</h1>
+        <p class="detail-esp">{{ prestador()!.especialidade }}</p>
+
+        <div class="tabs">
+          <button class="tab" [class.active]="activeTab() === 'desc'"     (click)="activeTab.set('desc')">Sobre</button>
+          <button class="tab" [class.active]="activeTab() === 'proposta'" (click)="activeTab.set('proposta')">Enviar proposta</button>
+        </div>
+
+        @if (activeTab() === 'desc') {
+          <div class="tab-content">
+            <p class="desc-text">{{ prestador()!.descricao || 'Nenhuma descrição informada.' }}</p>
+            @if (prestador()!.valorHora) {
+              <div class="valor-row">
+                <span class="valor-label">Valor por hora</span>
+                <span class="valor">R$ {{ prestador()!.valorHora }}</span>
+              </div>
+            }
+          </div>
+        }
+
+        @if (activeTab() === 'proposta') {
+          <div class="tab-content">
+            @if (sucesso()) {
+              <div class="success-msg">✅ Proposta enviada com sucesso!</div>
+            } @else {
+              <div class="field">
+                <label>Descrição do projeto</label>
+                <textarea rows="4" [(ngModel)]="proposta.descricao" placeholder="Descreva o que você precisa..."></textarea>
+              </div>
+              <div class="field">
+                <label>Valor proposto (R$)</label>
+                <input type="number" [(ngModel)]="proposta.valor" placeholder="0.00" min="0" />
+              </div>
+              <button class="btn btn-primary" [disabled]="enviando()" (click)="enviarProposta()">
+                {{ enviando() ? 'Enviando...' : 'Enviar proposta' }}
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- RIGHT -->
+      <div class="detail-side">
+        <div class="purchase-card">
+          <div class="p-header">
+            <div class="avatar p-av">{{ iniciais }}</div>
+            <div>
+              <div class="p-name">{{ prestador()!.nome }}</div>
+              <div class="p-esp">{{ prestador()!.especialidade }}</div>
+            </div>
+          </div>
+          @if (prestador()!.avaliacao) {
+            <div class="p-rating">
+              <span class="star">★</span>
+              {{ prestador()!.avaliacao }}
+              <span class="rev">({{ prestador()!.totalAvaliacoes }} avaliações)</span>
+            </div>
+          }
+          @if (prestador()!.valorHora) {
+            <div class="p-price">R$ {{ prestador()!.valorHora }}<span>/hora</span></div>
+          }
+          <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:12px" (click)="activeTab.set('proposta')">
+            Enviar proposta
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,76 @@
+<div class="auth-wrap page-enter">
+  <div class="auth-card">
+
+    <div class="auth-title serif">Criar conta</div>
+    <div class="auth-sub">Junte-se ao FreelanceHub</div>
+
+    <!-- TIPO -->
+    <div class="tipo-toggle">
+      <button
+        class="tipo-btn"
+        [class.active]="tipo() === 'cliente'"
+        (click)="setTipo('cliente')">
+        🧑‍💼 Sou Cliente
+      </button>
+      <button
+        class="tipo-btn"
+        [class.active]="tipo() === 'prestador'"
+        (click)="setTipo('prestador')">
+        💼 Sou Freelancer
+      </button>
+    </div>
+
+    @if (sucesso()) {
+      <div class="sucesso-msg">
+        ✅ Conta criada com sucesso! Redirecionando...
+      </div>
+    } @else {
+
+      @if (erro()) {
+        <div class="erro-msg">{{ erro() }}</div>
+      }
+
+      <div class="field">
+        <label>Nome completo</label>
+        <input type="text" [(ngModel)]="nome" placeholder="Seu nome" />
+      </div>
+
+      <div class="field">
+        <label>E-mail</label>
+        <input type="email" [(ngModel)]="email" placeholder="seu@email.com" />
+      </div>
+
+      <div class="field">
+        <label>Senha</label>
+        <input type="password" [(ngModel)]="senha" placeholder="Mínimo 6 caracteres" />
+      </div>
+
+      @if (tipo() === 'prestador') {
+        <div class="field">
+          <label>Especialidade</label>
+          <select [(ngModel)]="especialidade">
+            <option value="">Selecione...</option>
+            <option>Desenvolvimento</option>
+            <option>Design</option>
+            <option>Marketing Digital</option>
+            <option>Redação</option>
+            <option>Vídeo & Motion</option>
+            <option>IA & Automação</option>
+          </select>
+        </div>
+      }
+
+      <button
+        class="btn btn-primary auth-btn"
+        [disabled]="loading()"
+        (click)="cadastrar()">
+        {{ loading() ? 'Cadastrando...' : 'Criar conta grátis' }}
+      </button>
+
+      <div class="auth-switch">
+        Já tem conta? <a routerLink="/login">Entrar</a>
+      </div>
+    }
+
+  </div>
+</div>
