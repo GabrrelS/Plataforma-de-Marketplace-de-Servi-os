@@ -1,0 +1,44 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Contratos</h1>
+  </div>
+
+  @if (loading()) {
+    <div class="loading">Carregando...</div>
+  } @else if (contratos().length === 0) {
+    <div class="empty"><p>Nenhum contrato gerado ainda. Aceite uma proposta para criar um contrato.</p></div>
+  } @else {
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Cliente</th>
+            <th>Prestador</th>
+            <th>Proposta</th>
+            <th>Início</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (c of contratos(); track c.id) {
+            <tr>
+              <td class="id-col">{{ c.id }}</td>
+              <td>{{ nomeCliente(c.clienteId) }}</td>
+              <td>{{ nomePrestador(c.prestadorId) }}</td>
+              <td class="id-col">Proposta #{{ c.propostaId }}</td>
+              <td>{{ c.dataInicio | date:'dd/MM/yyyy' }}</td>
+              <td><span [class]="badgeClass(c.status)">{{ c.status }}</span></td>
+              <td>
+                @if (c.status === 'Ativo') {
+                  <button class="btn btn-sm btn-danger" (click)="encerrar(c)">Encerrar</button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

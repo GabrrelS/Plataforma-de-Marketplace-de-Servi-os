@@ -1,1 +1,138 @@
-/* You can add global styles to this file, and also import other style files */
+/* shared component styles — import in each feature's CSS */
+.page { padding: 1.5rem; max-width: 1100px; margin: 0 auto; }
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+.page-header h1 { font-size: 1.25rem; font-weight: 600; color: #111; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: #dcfce7; color: #15803d;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 600; font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.card-name { font-weight: 600; font-size: 15px; margin-bottom: 6px; color: #111; }
+
+.card-info {
+  display: flex; flex-direction: column; gap: 4px;
+  font-size: 12px; color: #6b7280; margin-bottom: 12px;
+}
+
+.card-actions {
+  display: flex; gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid #f3f4f6;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: 7px; font-size: 13px;
+  font-weight: 500; cursor: pointer; border: 1px solid #e5e7eb;
+  background: #fff; color: #374151; transition: all 0.15s;
+}
+.btn:hover { background: #f9fafb; }
+.btn-primary { background: #16a34a; border-color: #16a34a; color: #fff; }
+.btn-primary:hover { background: #15803d; }
+.btn-danger { color: #dc2626; border-color: #fecaca; }
+.btn-danger:hover { background: #fef2f2; }
+.btn-sm { padding: 5px 10px; font-size: 12px; }
+
+/* Tables */
+.table-wrap {
+  background: #fff; border: 1px solid #e5e7eb;
+  border-radius: 12px; overflow: hidden;
+}
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th {
+  padding: 10px 16px; text-align: left; font-weight: 500;
+  font-size: 11px; color: #6b7280; text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: #f9fafb; border-bottom: 1px solid #e5e7eb;
+}
+td { padding: 12px 16px; border-bottom: 1px solid #f3f4f6; color: #374151; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #fafafa; }
+
+/* Badges */
+.badge {
+  display: inline-flex; align-items: center;
+  padding: 3px 10px; border-radius: 99px;
+  font-size: 11px; font-weight: 600;
+}
+.badge-pendente { background: #fef9c3; color: #854d0e; }
+.badge-aceita   { background: #dcfce7; color: #15803d; }
+.badge-recusada { background: #fee2e2; color: #b91c1c; }
+.badge-ativo    { background: #dcfce7; color: #15803d; }
+.badge-encerrado{ background: #f3f4f6; color: #6b7280; }
+
+/* Modal */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+  display: flex; align-items: center; justify-content: center; z-index: 100;
+}
+.modal {
+  background: #fff; border-radius: 14px;
+  padding: 1.5rem; width: 440px; max-width: 95vw;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+}
+.modal-header {
+  display: flex; justify-content: space-between;
+  align-items: center; margin-bottom: 1.25rem;
+}
+.modal-header h2 { font-size: 16px; font-weight: 600; }
+.btn-close {
+  border: none; background: none; font-size: 16px;
+  color: #9ca3af; cursor: pointer;
+}
+.btn-close:hover { color: #374151; }
+.modal-footer {
+  display: flex; justify-content: flex-end;
+  gap: 8px; margin-top: 1.25rem;
+}
+
+/* Form */
+.form-group { margin-bottom: 14px; }
+.form-group label {
+  display: block; font-size: 12px;
+  font-weight: 500; color: #374151; margin-bottom: 5px;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%; padding: 8px 12px; font-size: 13px;
+  border: 1px solid #d1d5db; border-radius: 7px;
+  color: #111; background: #fff;
+  transition: border-color 0.15s;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none; border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22,163,74,0.1);
+}
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* States */
+.loading { padding: 3rem; text-align: center; color: #6b7280; font-size: 14px; }
+.empty   { padding: 4rem; text-align: center; color: #6b7280; }
+.empty p { margin-bottom: 1rem; }

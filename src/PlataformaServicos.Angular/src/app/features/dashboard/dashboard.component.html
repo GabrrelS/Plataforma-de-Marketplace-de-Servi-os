@@ -1,0 +1,69 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Painel de controle</h1>
+  </div>
+
+  @if (loading()) {
+    <div class="loading">Carregando dados...</div>
+  } @else {
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-label">Clientes</div>
+        <div class="stat-value">{{ totalClientes() }}</div>
+        <a routerLink="/clientes" class="stat-link">Ver todos →</a>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Prestadores</div>
+        <div class="stat-value">{{ totalPrestadores() }}</div>
+        <a routerLink="/prestadores" class="stat-link">Ver todos →</a>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Propostas</div>
+        <div class="stat-value">{{ totalPropostas() }}</div>
+        <a routerLink="/propostas" class="stat-link">Ver todas →</a>
+      </div>
+      <div class="stat-card highlight">
+        <div class="stat-label">Contratos ativos</div>
+        <div class="stat-value green">{{ contratosAtivos() }}</div>
+        <a routerLink="/contratos" class="stat-link">Ver todos →</a>
+      </div>
+    </div>
+
+    <div class="panels">
+      <div class="panel">
+        <h2>Propostas recentes</h2>
+        @if (propostasRecentes().length === 0) {
+          <p class="no-data">Nenhuma proposta ainda.</p>
+        } @else {
+          @for (p of propostasRecentes(); track p.id) {
+            <div class="list-item">
+              <div>
+                <div class="item-title">{{ p.titulo }}</div>
+                <div class="item-sub">{{ p.valor | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</div>
+              </div>
+              <span [class]="badgeClass(p.status)">{{ p.status }}</span>
+            </div>
+          }
+        }
+      </div>
+
+      <div class="panel">
+        <h2>Melhores prestadores</h2>
+        @if (topPrestadores().length === 0) {
+          <p class="no-data">Nenhum prestador cadastrado.</p>
+        } @else {
+          @for (p of topPrestadores(); track p.id) {
+            <div class="list-item">
+              <div class="pre-avatar">{{ iniciais(p.nome) }}</div>
+              <div style="flex:1">
+                <div class="item-title">{{ p.nome }}</div>
+                <div class="item-sub">{{ p.especialidade }}</div>
+              </div>
+              <span class="nota">{{ estrelas(p.notaMedia) }}</span>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  }
+</div>
