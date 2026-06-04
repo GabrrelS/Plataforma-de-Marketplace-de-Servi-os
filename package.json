@@ -1,0 +1,27 @@
+{
+  "name": "plataforma-de-marketplace-de-servi-os",
+  "version": "1.0.0",
+  "description": "```text\r plataforma-servicos/\r │\r ├── services/\r │   ├── PrestadoresService/\r │   ├── ClientesService/\r │   ├── PropostasService/\r │   │   ├── Controllers/\r │   │   ├── Models/\r │   │   ├── Data/\r │   │   ├── Services/\r │   │   ├── Events/\r │   │   │   └── PropostaAceitaEvent.cs\r │   │   ├── Program.cs\r │   │   ├── appsettings.json\r │   │   └── PropostasService.csproj\r │   │\r │   ├── ContratosService/\r │   ├── AvaliacoesService/\r │   └── RankingsService/\r │       ├── Queries/\r │       ├── Models/\r │       ├── Services/\r │       ├── Program.cs\r │       ├── appsettings.json\r │       └── RankingsService.csproj\r │\r ├── shared/\r │   ├── Events/\r │   └── DTOs/\r │\r ├── gateway/\r │   └── ApiGateway/\r │\r ├── realtime/\r │   └── RealtimeService/\r │\r └── docker-compose.yml",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GabrrelS/Plataforma-de-Marketplace-de-Servi-os.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/GabrrelS/Plataforma-de-Marketplace-de-Servi-os/issues"
+  },
+  "homepage": "https://github.com/GabrrelS/Plataforma-de-Marketplace-de-Servi-os#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^21.0.2",
+    "@commitlint/config-conventional": "^21.0.2",
+    "husky": "^9.1.7"
+  }
+}
