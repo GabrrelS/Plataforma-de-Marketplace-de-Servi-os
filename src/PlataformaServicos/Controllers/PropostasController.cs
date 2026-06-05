@@ -1,64 +1,69 @@
 using Microsoft.AspNetCore.Mvc;
+using MassTransit;
+using PlataformaServicos.Events;
 using PlataformaServicos.Models;
 using PlataformaServicos.Services;
 
-namespace PlataformaServicos.Controllers
+namespace PlataformaServicos.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class PropostasController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class PropostasController : ControllerBase
+    private readonly PropostaService _service;
+    private readonly IPublishEndpoint _publishEndpoint;
+
+    public PropostasController(PropostaService service, IPublishEndpoint publishEndpoint)
     {
-        private readonly PropostaService _service;
+        _service         = service;
+        _publishEndpoint = publishEndpoint;
+    }
 
-        public PropostasController(PropostaService service)
+    [HttpGet]
+    public async Task<ActionResult<List<Proposta>>> Listar()
+    {
+        return Ok(await _service.ListarAsync());
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Proposta>> BuscarPorId(int id)
+    {
+        var proposta = await _service.BuscarPorIdAsync(id);
+        if (proposta == null) return NotFound();
+        return Ok(proposta);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<Proposta>> Criar(Proposta proposta)
+    {
+        var novaProposta = await _service.CriarAsync(proposta);
+
+        // Publica evento no RabbitMQ via MassTransit
+        await _publishEndpoint.Publish(new PropostaCriadaEvent
         {
-            _service = service;
-        }
+            PropostaId  = novaProposta.Id,
+            ClienteId   = novaProposta.ClienteId,
+            PrestadorId = novaProposta.PrestadorId,
+            Titulo      = novaProposta.Titulo,
+            Valor       = novaProposta.Valor
+        });
 
-        [HttpGet]
-        public async Task<ActionResult<List<Proposta>>> Listar()
-        {
-            return Ok(await _service.ListarAsync());
-        }
+        return CreatedAtAction(nameof(BuscarPorId), new { id = novaProposta.Id }, novaProposta);
+    }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Proposta>> BuscarPorId(int id)
-        {
-            var proposta = await _service.BuscarPorIdAsync(id);
+    [HttpPut("{id}")]
+    public async Task<ActionResult> Atualizar(int id, Proposta proposta)
+    {
+        var atualizado = await _service.AtualizarAsync(id, proposta);
+        if (!atualizado) return NotFound();
+        return NoContent();
+    }
 
-            if (proposta == null)
-                return NotFound();
-
-            return Ok(proposta);
-        }
-
-        [HttpPost]
-        public async Task<ActionResult<Proposta>> Criar(Proposta proposta)
-        {
-            var novaProposta = await _service.CriarAsync(proposta);
-            return CreatedAtAction(nameof(BuscarPorId), new { id = novaProposta.Id }, novaProposta);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<ActionResult> Atualizar(int id, Proposta proposta)
-        {
-            var atualizado = await _service.AtualizarAsync(id, proposta);
-
-            if (!atualizado)
-                return NotFound();
-
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> Deletar(int id)
-        {
-            var deletado = await _service.DeletarAsync(id);
-
-            if (!deletado)
-                return NotFound();
-
-            return NoContent();
-        }
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> Deletar(int id)
+    {
+        var deletado = await _service.DeletarAsync(id);
+        if (!deletado) return NotFound();
+        return NoContent();
     }
 }

@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+using MediatR;
 using PlataformaServicos.Models;
 using PlataformaServicos.Services;
+using PlataformaServicos.Features.Clientes.Commands;
+using PlataformaServicos.Features.Clientes.Queries;
 
 namespace PlataformaServicos.Controllers
 {
@@ -9,16 +12,21 @@ namespace PlataformaServicos.Controllers
     public class ClientesController : ControllerBase
     {
         private readonly ClienteService _service;
+        private readonly IMediator _mediator;
 
-        public ClientesController(ClienteService service)
+        // Injetamos o Mediator para o CQRS e mantemos o service para o CRUD restante
+        public ClientesController(ClienteService service, IMediator mediator)
         {
             _service = service;
+            _mediator = mediator;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<Cliente>>> Listar()
         {
-            return Ok(await _service.ListarAsync());
+            // Usando CQRS (Query) via MediatR
+            var clientes = await _mediator.Send(new ListarClientesQuery());
+            return Ok(clientes);
         }
 
         [HttpGet("{id}")]
@@ -35,16 +43,17 @@ namespace PlataformaServicos.Controllers
         [HttpPost]
         public async Task<ActionResult<Cliente>> Criar(Cliente cliente)
         {
-            var novoCliente = await _service.CriarAsync(cliente);
+            // Usando CQRS (Command) via MediatR
+            var novoCliente = await _mediator.Send(new CriarClienteCommand(cliente));
             return CreatedAtAction(nameof(BuscarPorId), new { id = novoCliente.Id }, novoCliente);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult> Atualizar(int id, Cliente cliente)
         {
-            var atualizado = await _service.AtualizarAsync(id, cliente);
+            var updated = await _service.AtualizarAsync(id, cliente);
 
-            if (!atualizado)
+            if (!updated)
                 return NotFound();
 
             return NoContent();
