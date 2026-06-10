@@ -10,13 +10,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
-
+ 
 var builder = WebApplication.CreateBuilder(args);
-
+ 
 // ======================
 // CONFIGURAÇÃO SERILOG
 // ======================
-
+ 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
     .MinimumLevel.Override(
@@ -37,21 +37,21 @@ Log.Logger = new LoggerConfiguration()
         rollingInterval: RollingInterval.Day
     )
     .CreateLogger();
-
+ 
 builder.Host.UseSerilog();
-
+ 
 try
 {
     Log.Information("Iniciando PlataformaServicos");
-
+ 
     // ======================
     // SERVIÇOS
     // ======================
-
+ 
     builder.Services.AddControllers();
-
+ 
     builder.Services.AddEndpointsApiExplorer();
-
+ 
     builder.Services.AddSwaggerGen(c =>
     {
         c.AddSecurityDefinition("Bearer",
@@ -81,9 +81,10 @@ try
                 }
             });
     });
-    var jwtKey =
-    builder.Configuration["Jwt:Key"];
-
+ 
+    var jwtKey = builder.Configuration["Jwt:Key"]
+        ?? throw new InvalidOperationException("Jwt:Key não configurado.");
+ 
     builder.Services
     .AddAuthentication(
         JwtBearerDefaults.AuthenticationScheme)
@@ -96,98 +97,95 @@ try
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-
+ 
                 ValidIssuer =
                     builder.Configuration["Jwt:Issuer"],
-
+ 
                 ValidAudience =
                     builder.Configuration["Jwt:Audience"],
-
+ 
                 IssuerSigningKey =
                     new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(jwtKey!)
+                        Encoding.UTF8.GetBytes(jwtKey)
                     )
             };
     });
-
+ 
     // ======================
     // DATABASE
     // ======================
-
+ 
     var connectionString =
         builder.Configuration.GetConnectionString("DefaultConnection");
-
+ 
     builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseNpgsql(connectionString)
     );
-
+ 
     // ======================
     // HEALTH CHECKS
     // ======================
-
+ 
     builder.Services
         .AddHealthChecks()
         .AddNpgSql(
             connectionString!,
             name: "postgres"
         );
-
+ 
     // ======================
     // SERVICES
     // ======================
-
+ 
     builder.Services.AddScoped<PrestadorService>();
     builder.Services.AddScoped<ClienteService>();
     builder.Services.AddScoped<PropostaService>();
-
+ 
     // ======================
     // BUILD APP
     // ======================
-
+ 
     var app = builder.Build();
-
+ 
     // ======================
     // MIDDLEWARES
     // ======================
-
+ 
     app.UseSerilogRequestLogging();
-
+ 
     app.UseRouting();
-
-    if (app.Environment.IsDevelopment())
+ 
+    // Swagger disponível em todos os ambientes (Development e Production)
+    app.UseSwagger();
+ 
+    app.UseSwaggerUI(options =>
     {
-        app.UseSwagger();
-
-        app.UseSwaggerUI(options =>
-        {
-            options.SwaggerEndpoint(
-                "/swagger/v1/swagger.json",
-                "PlataformaServicos API V1"
-            );
-
-            options.RoutePrefix = "swagger";
-        });
-    }
-
+        options.SwaggerEndpoint(
+            "/swagger/v1/swagger.json",
+            "PlataformaServicos API V1"
+        );
+ 
+        options.RoutePrefix = "swagger";
+    });
+ 
     app.UseHttpsRedirection();
     app.UseAuthentication();
     app.UseAuthorization();
-
+ 
     // ======================
     // PROMETHEUS
     // ======================
-
+ 
     app.UseHttpMetrics();
-
+ 
     app.MapMetrics();
-
-
+ 
     // ======================
     // ROTAS
     // ======================
-
+ 
     app.MapControllers();
-
+ 
     app.MapHealthChecks(
         "/health",
         new HealthCheckOptions
@@ -196,9 +194,9 @@ try
                 UIResponseWriter.WriteHealthCheckUIResponse
         }
     );
-
+ 
     Log.Information("Aplicação iniciada");
-
+ 
     app.Run();
 }
 catch (Exception ex)
