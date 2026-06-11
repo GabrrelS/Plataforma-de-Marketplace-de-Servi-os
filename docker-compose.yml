@@ -1,19 +1,5 @@
 services:
  
-  postgres:
-    image: postgres:16-alpine
-    container_name: marketplace-postgres
-    environment:
-      POSTGRES_USER: marketplace
-      POSTGRES_PASSWORD: marketplace123
-      POSTGRES_DB: marketplace_db
-    ports:
-      - "5433:5432"
-    networks:
-      - marketplace-net
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
- 
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
@@ -48,8 +34,8 @@ services:
     ports:
       - "3000:3000"
     environment:
-      GF_SECURITY_ADMIN_USER: admin
-      GF_SECURITY_ADMIN_PASSWORD: admin123
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USER}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
     volumes:
       - grafana-data:/var/lib/grafana
     depends_on:
@@ -67,12 +53,6 @@ services:
       - "5006:5006"
     environment:
       ASPNETCORE_URLS: http://+:5006
-      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=marketplace_db;Username=marketplace;Password=marketplace123"
-      Jwt__Key: "marketplace-super-secret-key-2024-placeholder"
-      Jwt__Issuer: "PlataformaServicos"
-      Jwt__Audience: "PlataformaServicos"
-    depends_on:
-      - postgres
     networks:
       - marketplace-net
  
@@ -93,4 +73,3 @@ networks:
  
 volumes:
   grafana-data:
-  postgres-data:
