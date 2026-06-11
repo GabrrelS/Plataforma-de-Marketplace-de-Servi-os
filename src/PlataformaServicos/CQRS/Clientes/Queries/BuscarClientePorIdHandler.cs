@@ -10,6 +10,6 @@ namespace PlataformaServicos.CQRS.Clientes.Queries
         public BuscarClientePorIdHandler(AppDbContext context) => _context = context;
 
         public async Task<Cliente?> Handle(BuscarClientePorIdQuery request, CancellationToken cancellationToken)
-            => await _context.Clientes.FindAsync(request.Id);
+            => await _context.Clientes.FindAsync(new object[] { request.Id }, cancellationToken);
     }
 }

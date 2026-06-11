@@ -10,7 +10,7 @@ namespace PlataformaServicos.CQRS.Clientes.Commands
 
         public async Task<bool> Handle(DeletarClienteCommand request, CancellationToken cancellationToken)
         {
-            var cliente = await _context.Clientes.FindAsync(request.Id);
+            var cliente = await _context.Clientes.FindAsync(new object[] { request.Id }, cancellationToken);
             if (cliente == null) return false;
             _context.Clientes.Remove(cliente);
             await _context.SaveChangesAsync(cancellationToken);

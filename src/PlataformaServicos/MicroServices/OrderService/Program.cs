@@ -6,16 +6,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 var app = builder.Build();
 
+app.MapGet("/health", () => Results.Ok(new { status = "healthy" }));
+
 app.MapPost("/orders", (object order) =>
 {
-    var factory = new ConnectionFactory()
-    {
-        HostName = "localhost"
-    };
+    var rabbitHost = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "rabbitmq";
 
-    var connection = factory.CreateConnection();
+    var factory = new ConnectionFactory() { HostName = rabbitHost };
 
-    var channel = connection.CreateModel();
+    using var connection = factory.CreateConnection();
+    using var channel = connection.CreateModel();
 
     channel.QueueDeclare(
         queue: "pedido_criado",
@@ -26,7 +26,6 @@ app.MapPost("/orders", (object order) =>
     );
 
     var message = JsonSerializer.Serialize(order);
-
     var body = Encoding.UTF8.GetBytes(message);
 
     channel.BasicPublish(
@@ -38,10 +37,7 @@ app.MapPost("/orders", (object order) =>
 
     Console.WriteLine("Evento publicado!");
 
-    return Results.Ok(new
-    {
-        message = "Pedido criado"
-    });
+    return Results.Ok(new { message = "Pedido criado" });
 });
 
-app.Run("http://localhost:5001");
+app.Run("http://+:5007");

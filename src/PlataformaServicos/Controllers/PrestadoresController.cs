@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using PlataformaServicos.CQRS.Prestadores.Commands;
 using PlataformaServicos.CQRS.Prestadores.Queries;
+using PlataformaServicos.DTOs.Prestadores;
 using PlataformaServicos.Models;
 
 namespace PlataformaServicos.Controllers
@@ -25,16 +26,16 @@ namespace PlataformaServicos.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Prestador>> Criar(Prestador prestador)
+        public async Task<ActionResult<Prestador>> Criar(CriarPrestadorDto dto)
         {
-            var novo = await _mediator.Send(new CriarPrestadorCommand(prestador.Nome, prestador.Email, prestador.Especialidade, prestador.NotaMedia));
+            var novo = await _mediator.Send(new CriarPrestadorCommand(dto.Nome, dto.Email, dto.Especialidade, dto.NotaMedia));
             return CreatedAtAction(nameof(BuscarPorId), new { id = novo.Id }, novo);
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Atualizar(int id, Prestador prestador)
+        public async Task<ActionResult> Atualizar(int id, AtualizarPrestadorDto dto)
         {
-            var atualizado = await _mediator.Send(new AtualizarPrestadorCommand(id, prestador.Nome, prestador.Email, prestador.Especialidade, prestador.NotaMedia));
+            var atualizado = await _mediator.Send(new AtualizarPrestadorCommand(id, dto.Nome, dto.Email, dto.Especialidade, dto.NotaMedia));
             return atualizado ? NoContent() : NotFound();
         }
 

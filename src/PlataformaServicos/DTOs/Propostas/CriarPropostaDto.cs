@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace PlataformaServicos.DTOs
+namespace PlataformaServicos.DTOs.Propostas
 {
     public class CriarPropostaDto
     {

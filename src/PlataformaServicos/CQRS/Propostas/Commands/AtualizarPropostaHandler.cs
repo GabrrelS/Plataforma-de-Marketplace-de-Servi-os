@@ -10,7 +10,7 @@ namespace PlataformaServicos.CQRS.Propostas.Commands
 
         public async Task<bool> Handle(AtualizarPropostaCommand request, CancellationToken cancellationToken)
         {
-            var proposta = await _context.Propostas.FindAsync(request.Id);
+            var proposta = await _context.Propostas.FindAsync(new object[] { request.Id }, cancellationToken);
             if (proposta == null) return false;
             proposta.Titulo = request.Titulo;
             proposta.Descricao = request.Descricao;

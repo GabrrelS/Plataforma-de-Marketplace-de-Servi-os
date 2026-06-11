@@ -10,7 +10,7 @@ namespace PlataformaServicos.CQRS.Prestadores.Commands
 
         public async Task<bool> Handle(AtualizarPrestadorCommand request, CancellationToken cancellationToken)
         {
-            var prestador = await _context.Prestadores.FindAsync(request.Id);
+            var prestador = await _context.Prestadores.FindAsync(new object[] { request.Id }, cancellationToken);
             if (prestador == null) return false;
             prestador.Nome = request.Nome;
             prestador.Email = request.Email;

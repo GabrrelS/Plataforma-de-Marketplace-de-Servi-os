@@ -1,14 +1,52 @@
+# =============================================================
+#  Plataforma de Marketplace de Serviços
+#  
+#  Serviços:
+#    - gateway           → :5000  (Ocelot API Gateway)
+#    - backend           → :5006  (API principal + CQRS)
+#    - order-service     → :5007  (Microsserviço de pedidos)
+#    - product-service   → :5008  (Microsserviço de produtos + Redis cache)
+#    - notification-svc  → :5009  (Microsserviço de notificações + SignalR)
+#    - frontend          → :4200  (Angular)
+#    - postgres          → :5432  (Banco de dados)
+#    - redis             → :6379  (Cache)
+#    - rabbitmq          → :5672 / :15672 (Mensageria)
+#    - prometheus        → :9090  (Métricas)
+#    - grafana           → :3000  (Dashboard)
+#
+#  Para subir tudo:
+#    docker-compose up --build
+#
+#  Para derrubar e limpar volumes:
+#    docker-compose down -v
+# =============================================================
+
 services:
- 
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: rabbitmq
+
+  # --------------------------------------------------
+  # INFRAESTRUTURA
+  # --------------------------------------------------
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: marketplace-postgres
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
     networks:
       - marketplace-net
- 
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   redis:
     image: redis:7-alpine
     container_name: marketplace-redis
@@ -16,7 +54,27 @@ services:
       - "6379:6379"
     networks:
       - marketplace-net
- 
+    restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: marketplace-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - marketplace-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+
+  # --------------------------------------------------
+  # MONITORAMENTO
+  # --------------------------------------------------
+
   prometheus:
     image: prom/prometheus:v2.51.0
     container_name: marketplace-prometheus
@@ -27,7 +85,7 @@ services:
     networks:
       - marketplace-net
     restart: unless-stopped
- 
+
   grafana:
     image: grafana/grafana:10.4.0
     container_name: marketplace-grafana
@@ -43,33 +101,121 @@ services:
     networks:
       - marketplace-net
     restart: unless-stopped
- 
+
+  # --------------------------------------------------
+  # MICROSSERVIÇOS
+  # --------------------------------------------------
+
+  order-service:
+    build:
+      context: ./src/PlataformaServicos/MicroServices/OrderService
+      dockerfile: Dockerfile
+    container_name: marketplace-order-service
+    ports:
+      - "5007:5007"
+    environment:
+      ASPNETCORE_URLS: http://+:5007
+      RABBITMQ_HOST: rabbitmq
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - marketplace-net
+    restart: unless-stopped
+
+  product-service:
+    build:
+      context: ./src/PlataformaServicos/MicroServices/ProductService
+      dockerfile: Dockerfile
+    container_name: marketplace-product-service
+    ports:
+      - "5008:5008"
+    environment:
+      ASPNETCORE_URLS: http://+:5008
+      REDIS_HOST: redis
+    depends_on:
+      - redis
+    networks:
+      - marketplace-net
+    restart: unless-stopped
+
+  notification-service:
+    build:
+      context: ./src/PlataformaServicos/MicroServices/NotificationService
+      dockerfile: Dockerfile
+    container_name: marketplace-notification-service
+    ports:
+      - "5009:5009"
+    environment:
+      ASPNETCORE_URLS: http://+:5009
+    networks:
+      - marketplace-net
+    restart: unless-stopped
+
+  # --------------------------------------------------
+  # BACKEND PRINCIPAL
+  # --------------------------------------------------
+
   backend:
     build:
       context: ./src/PlataformaServicos
       dockerfile: Dockerfile
-    container_name: marketplace_backend
+    container_name: marketplace-backend
     ports:
       - "5006:5006"
     environment:
       ASPNETCORE_URLS: http://+:5006
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
     networks:
       - marketplace-net
- 
+    restart: unless-stopped
+
+  # --------------------------------------------------
+  # GATEWAY
+  # --------------------------------------------------
+
+  gateway:
+    build:
+      context: ./src/Gateway
+      dockerfile: Dockerfile
+    container_name: marketplace-gateway
+    ports:
+      - "5000:5000"
+    environment:
+      ASPNETCORE_URLS: http://+:5000
+    depends_on:
+      - backend
+      - order-service
+      - product-service
+      - notification-service
+    networks:
+      - marketplace-net
+    restart: unless-stopped
+
+  # --------------------------------------------------
+  # FRONTEND
+  # --------------------------------------------------
+
   frontend:
     build:
       context: ./src/PlataformaServicos.Angular
       dockerfile: Dockerfile
-    container_name: marketplace_frontend
+    container_name: marketplace-frontend
     ports:
       - "4200:80"
     depends_on:
-      - backend
+      - gateway
     networks:
       - marketplace-net
- 
+    restart: unless-stopped
+
 networks:
   marketplace-net:
- 
+    driver: bridge
+
 volumes:
+  postgres-data:
   grafana-data:

@@ -5,6 +5,8 @@ VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaServicos", "PlataformaServicos\PlataformaServicos.csproj", "{09B55E3A-B787-DED5-3D43-3AD38FA7CBB1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gateway", "Gateway\Gateway.csproj", "{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaServicos.Tests", "PlataformaServicos.Tests\PlataformaServicos.Tests.csproj", "{BBC1FC24-B446-4BB5-A23F-F39BEFADF1AC}"
 EndProject
 Global

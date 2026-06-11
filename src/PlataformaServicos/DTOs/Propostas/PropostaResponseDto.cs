@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Marketplace.API.DTOs.Propostas
+namespace PlataformaServicos.DTOs.Propostas
 {
     public class PropostaResponseDto
     {

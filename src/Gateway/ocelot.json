@@ -1,0 +1,84 @@
+{
+  "Routes": [
+    {
+      "UpstreamPathTemplate": "/gateway/clientes",
+      "UpstreamHttpMethod": [ "GET", "POST" ],
+      "DownstreamPathTemplate": "/api/Clientes",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "backend", "Port": 5006 } ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/clientes/{id}",
+      "UpstreamHttpMethod": [ "GET", "PUT", "DELETE" ],
+      "DownstreamPathTemplate": "/api/Clientes/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "backend", "Port": 5006 } ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/prestadores",
+      "UpstreamHttpMethod": [ "GET", "POST" ],
+      "DownstreamPathTemplate": "/api/Prestadores",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "backend", "Port": 5006 } ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/prestadores/{id}",
+      "UpstreamHttpMethod": [ "GET", "PUT", "DELETE" ],
+      "DownstreamPathTemplate": "/api/Prestadores/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "backend", "Port": 5006 } ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/propostas",
+      "UpstreamHttpMethod": [ "GET", "POST" ],
+      "DownstreamPathTemplate": "/api/Propostas",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "backend", "Port": 5006 } ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/propostas/{id}",
+      "UpstreamHttpMethod": [ "GET", "PUT", "DELETE" ],
+      "DownstreamPathTemplate": "/api/Propostas/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "backend", "Port": 5006 } ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/auth/login",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/api/Auth/login",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "backend", "Port": 5006 } ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/auth/register",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/api/Auth/register",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "backend", "Port": 5006 } ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/orders",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/orders",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "order-service", "Port": 5007 } ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/products",
+      "UpstreamHttpMethod": [ "GET", "POST" ],
+      "DownstreamPathTemplate": "/products",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "product-service", "Port": 5008 } ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/notificacoes",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/api/notificacoes",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "notification-service", "Port": 5009 } ]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:5000"
+  }
+}

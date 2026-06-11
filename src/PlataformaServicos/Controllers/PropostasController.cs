@@ -2,7 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using PlataformaServicos.CQRS.Propostas.Commands;
 using PlataformaServicos.CQRS.Propostas.Queries;
-using PlataformaServicos.DTOs;
+using PlataformaServicos.DTOs.Propostas;
 using PlataformaServicos.Models;
 
 namespace PlataformaServicos.Controllers

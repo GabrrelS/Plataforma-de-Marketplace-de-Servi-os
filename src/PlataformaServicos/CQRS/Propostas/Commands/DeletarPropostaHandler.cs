@@ -10,7 +10,7 @@ namespace PlataformaServicos.CQRS.Propostas.Commands
 
         public async Task<bool> Handle(DeletarPropostaCommand request, CancellationToken cancellationToken)
         {
-            var proposta = await _context.Propostas.FindAsync(request.Id);
+            var proposta = await _context.Propostas.FindAsync(new object[] { request.Id }, cancellationToken);
             if (proposta == null) return false;
             _context.Propostas.Remove(proposta);
             await _context.SaveChangesAsync(cancellationToken);

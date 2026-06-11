@@ -10,6 +10,6 @@ namespace PlataformaServicos.CQRS.Propostas.Queries
         public BuscarPropostaPorIdHandler(AppDbContext context) => _context = context;
 
         public async Task<Proposta?> Handle(BuscarPropostaPorIdQuery request, CancellationToken cancellationToken)
-            => await _context.Propostas.FindAsync(request.Id);
+            => await _context.Propostas.FindAsync(new object[] { request.Id }, cancellationToken);
     }
 }

@@ -139,6 +139,16 @@ try
         ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
     });
 
+    // ======================
+    // MIGRATIONS AUTOMÁTICAS
+    // ======================
+
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        db.Database.Migrate();
+    }
+
     Log.Information("Aplicação iniciada");
     app.Run();
 }

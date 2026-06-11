@@ -10,6 +10,6 @@ namespace PlataformaServicos.CQRS.Prestadores.Queries
         public BuscarPrestadorPorIdHandler(AppDbContext context) => _context = context;
 
         public async Task<Prestador?> Handle(BuscarPrestadorPorIdQuery request, CancellationToken cancellationToken)
-            => await _context.Prestadores.FindAsync(request.Id);
+            => await _context.Prestadores.FindAsync(new object[] { request.Id }, cancellationToken);
     }
 }
