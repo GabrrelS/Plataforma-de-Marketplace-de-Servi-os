@@ -1,6 +1,8 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using PlataformaServicos.CQRS.Clientes.Commands;
+using PlataformaServicos.CQRS.Clientes.Queries;
 using PlataformaServicos.Models;
-using PlataformaServicos.Services;
 
 namespace PlataformaServicos.Controllers
 {
@@ -8,57 +10,39 @@ namespace PlataformaServicos.Controllers
     [Route("api/[controller]")]
     public class ClientesController : ControllerBase
     {
-        private readonly ClienteService _service;
-
-        public ClientesController(ClienteService service)
-        {
-            _service = service;
-        }
+        private readonly IMediator _mediator;
+        public ClientesController(IMediator mediator) => _mediator = mediator;
 
         [HttpGet]
         public async Task<ActionResult<List<Cliente>>> Listar()
-        {
-            return Ok(await _service.ListarAsync());
-        }
+            => Ok(await _mediator.Send(new ListarClientesQuery()));
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Cliente>> BuscarPorId(int id)
         {
-            var cliente = await _service.BuscarPorIdAsync(id);
-
-            if (cliente == null)
-                return NotFound();
-
-            return Ok(cliente);
+            var cliente = await _mediator.Send(new BuscarClientePorIdQuery(id));
+            return cliente == null ? NotFound() : Ok(cliente);
         }
 
         [HttpPost]
         public async Task<ActionResult<Cliente>> Criar(Cliente cliente)
         {
-            var novoCliente = await _service.CriarAsync(cliente);
-            return CreatedAtAction(nameof(BuscarPorId), new { id = novoCliente.Id }, novoCliente);
+            var novo = await _mediator.Send(new CriarClienteCommand(cliente.Nome, cliente.Email, cliente.Telefone));
+            return CreatedAtAction(nameof(BuscarPorId), new { id = novo.Id }, novo);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult> Atualizar(int id, Cliente cliente)
         {
-            var atualizado = await _service.AtualizarAsync(id, cliente);
-
-            if (!atualizado)
-                return NotFound();
-
-            return NoContent();
+            var atualizado = await _mediator.Send(new AtualizarClienteCommand(id, cliente.Nome, cliente.Email, cliente.Telefone));
+            return atualizado ? NoContent() : NotFound();
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Deletar(int id)
         {
-            var deletado = await _service.DeletarAsync(id);
-
-            if (!deletado)
-                return NotFound();
-
-            return NoContent();
+            var deletado = await _mediator.Send(new DeletarClienteCommand(id));
+            return deletado ? NoContent() : NotFound();
         }
     }
 }

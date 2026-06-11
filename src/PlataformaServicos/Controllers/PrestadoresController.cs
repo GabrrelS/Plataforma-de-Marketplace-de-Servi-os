@@ -1,6 +1,8 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using PlataformaServicos.CQRS.Prestadores.Commands;
+using PlataformaServicos.CQRS.Prestadores.Queries;
 using PlataformaServicos.Models;
-using PlataformaServicos.Services;
 
 namespace PlataformaServicos.Controllers
 {
@@ -8,57 +10,39 @@ namespace PlataformaServicos.Controllers
     [Route("api/[controller]")]
     public class PrestadoresController : ControllerBase
     {
-        private readonly PrestadorService _service;
-
-        public PrestadoresController(PrestadorService service)
-        {
-            _service = service;
-        }
+        private readonly IMediator _mediator;
+        public PrestadoresController(IMediator mediator) => _mediator = mediator;
 
         [HttpGet]
         public async Task<ActionResult<List<Prestador>>> Listar()
-        {
-            return Ok(await _service.ListarAsync());
-        }
+            => Ok(await _mediator.Send(new ListarPrestadoresQuery()));
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Prestador>> BuscarPorId(int id)
         {
-            var prestador = await _service.BuscarPorIdAsync(id);
-
-            if (prestador == null)
-                return NotFound();
-
-            return Ok(prestador);
+            var prestador = await _mediator.Send(new BuscarPrestadorPorIdQuery(id));
+            return prestador == null ? NotFound() : Ok(prestador);
         }
 
         [HttpPost]
         public async Task<ActionResult<Prestador>> Criar(Prestador prestador)
         {
-            var novoPrestador = await _service.CriarAsync(prestador);
-            return CreatedAtAction(nameof(BuscarPorId), new { id = novoPrestador.Id }, novoPrestador);
+            var novo = await _mediator.Send(new CriarPrestadorCommand(prestador.Nome, prestador.Email, prestador.Especialidade, prestador.NotaMedia));
+            return CreatedAtAction(nameof(BuscarPorId), new { id = novo.Id }, novo);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult> Atualizar(int id, Prestador prestador)
         {
-            var atualizado = await _service.AtualizarAsync(id, prestador);
-
-            if (!atualizado)
-                return NotFound();
-
-            return NoContent();
+            var atualizado = await _mediator.Send(new AtualizarPrestadorCommand(id, prestador.Nome, prestador.Email, prestador.Especialidade, prestador.NotaMedia));
+            return atualizado ? NoContent() : NotFound();
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Deletar(int id)
         {
-            var deletado = await _service.DeletarAsync(id);
-
-            if (!deletado)
-                return NotFound();
-
-            return NoContent();
+            var deletado = await _mediator.Send(new DeletarPrestadorCommand(id));
+            return deletado ? NoContent() : NotFound();
         }
     }
 }
